@@ -9,13 +9,59 @@ use App\Http\Controllers\Api\studentProfileController;
 //     return $request->user();
 // })->middleware('auth:sanctum');
 
-Route::middleware('auth:sanctum')->group(function () {
+Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [studentProfileController::class, 'index']);
+    Route::post('/experience', [studentProfileController::class, 'storeexperience']);
+    Route::post('/education', [studentProfileController::class, 'storeEducation']);
+    Route::get('/education', [studentProfileController::class, 'getEducation']);
 
-    Route::get('student-profile', [StudentProfileController::class, 'index']);
-    Route::post('student-profile/experience', [StudentProfileController::class, 'storeexperience']);
-    Route::post('student-profile/skills', [SkillsController::class, 'storeskills']);
-    Route::get('student-profile/skills', [SkillsController::class, 'skills']);
-    Route::delete('student-profile/skills', [SkillsController::class, 'deleteSkill']);
-    Route::post('student-profile/education', [StudentProfileController::class, 'storeEducation']);
-    Route::get('student-profile/education', [StudentProfileController::class, 'getEducation']);
+    Route::post('/skills', [SkillsController::class, 'storeskills']);
+    Route::get('/skills', [SkillsController::class, 'skills']);
+    Route::delete('/skills', [SkillsController::class, 'deleteSkill']);
 });
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StudentAuthController;
+use App\Http\Controllers\CompanyAuthController;
+
+
+// Test Route
+Route::get('/test', function () {
+    return response()->json(['message' => 'API is working!']);
+
+
+    
+});
+
+
+
+
+Route::prefix('company')->group(function () {
+    Route::post('/register', [CompanyAuthController::class, 'register']);
+    Route::post('/login', [CompanyAuthController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [CompanyAuthController::class, 'logout']);
+        Route::get('/profile', function (Request $request) {
+            return $request->user();
+        });
+    });
+});
+
+
+
+
+
+
+
+Route::prefix('student')->group(function () {
+    Route::post('/register', [StudentAuthController::class, 'register']);
+    Route::post('/login', [StudentAuthController::class, 'login']);
+
+    Route::middleware('auth:sanctum')->group(function () {
+        Route::post('/logout', [StudentAuthController::class, 'logout']);
+        Route::get('/profile', function (Request $request) {
+            return $request->user();
+        });
+    });
+});    

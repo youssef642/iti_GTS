@@ -71,6 +71,35 @@ return [
         // ],
     ],
 
+    'guards' => [
+    'api' => [
+        'driver' => 'sanctum',
+        'provider' => 'companies',
+    ],
+],
+
+'providers' => [
+    'companies' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Company::class,
+    ],
+],
+
+'providers' => [
+    'students' => [
+        'driver' => 'eloquent',
+        'model' => App\Models\Student::class,
+    ],
+    
+],
+
+'guards' => [
+    'student' => [
+        'driver' => 'sanctum',
+        'provider' => 'students',
+    ],
+],
+
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords
@@ -112,4 +141,8 @@ return [
 
     'password_timeout' => env('AUTH_PASSWORD_TIMEOUT', 10800),
 
+
+    
+
 ];
+
