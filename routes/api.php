@@ -6,6 +6,28 @@ use App\Http\Controllers\api\auth\CompanyAuthController;
 use App\Http\Controllers\api\auth\StudentAuthController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\API\JobPostController;
+use App\Http\Controllers\Api\SkillsController;
+use App\Http\Controllers\Api\studentProfileController;
+
+// Route::get('/user', function (Request $request) {
+//     return $request->user();
+// })->middleware('auth:sanctum');
+
+Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [studentProfileController::class, 'index']);
+    Route::post('/experience', [studentProfileController::class, 'storeexperience']);
+    Route::post('/education', [studentProfileController::class, 'storeEducation']);
+    Route::get('/education', [studentProfileController::class, 'getEducation']);
+
+    Route::post('/skills', [SkillsController::class, 'storeskills']);
+    Route::get('/skills', [SkillsController::class, 'skills']);
+    Route::delete('/skills', [SkillsController::class, 'deleteSkill']);
+});
+
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\StudentAuthController;
+use App\Http\Controllers\CompanyAuthController;
+
 
 // Test Route
 Route::get('/test', function () {
