@@ -3,35 +3,31 @@
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\api\auth\CompanyAuthController;
-use App\Http\Controllers\api\auth\StudentAuthController;
 use App\Http\Controllers\Api\JobController;
 use App\Http\Controllers\API\JobPostController;
 use App\Http\Controllers\Api\SkillsController;
 use App\Http\Controllers\Api\studentProfileController;
-use App\Http\Controllers\StudentAuthController;
-use App\Http\Controllers\CompanyAuthController;
-
+use App\Http\Controllers\api\auth\StudentAuthController;
+use App\Http\Controllers\Api\CompanyController;
 
 Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [studentProfileController::class, 'index']);
-    Route::post('/education', [studentProfileController::class, 'storeEducation']);
-    Route::get('/education', [studentProfileController::class, 'getEducation']);
+    // Route::post('/education', [studentProfileController::class, 'storeEducation']);
+    // Route::get('/education', [studentProfileController::class, 'getEducation']);
 
     Route::post('/skills', [SkillsController::class, 'storeskills']);
     Route::get('/skills', [SkillsController::class, 'index']);
     Route::delete('/skill/{id}', [SkillsController::class, 'destroy']);
 });
 
-
-
-
-// Test Route
-Route::get('/test', function () {
-    return response()->json(['message' => 'API is working!']);
-
-
-    
+Route::prefix('company')->middleware('auth:sanctum')->group(function () {
+    Route::get('/', [CompanyController::class, 'index']);
+    Route::put('/', [CompanyController::class, 'update']);
+    Route::get('/jobs', [CompanyController::class, 'company_jobs']);
+    Route::post('/jobs', [CompanyController::class, 'create_job']);
+    Route::get('/jobs/{jobId}/applications', [CompanyController::class, 'getJobApplications']);
 });
+
 
 
 
@@ -70,7 +66,6 @@ Route::prefix('student')->group(function () {
 Route::get('/jobs', [JobPostController::class, 'index']);
 Route::get('/jobs/{id}', [JobPostController::class, 'show']);
 
-// فقط شركة مسجلة دخول تقدر تنشر وظيفة
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/jobs', [JobPostController::class, 'store']);
 });
