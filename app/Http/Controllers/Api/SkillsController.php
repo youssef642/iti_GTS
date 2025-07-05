@@ -21,7 +21,7 @@ class SkillsController extends Controller
     /**
      * Store a newly created resource in storage.
      */
-    public function store(Request $request)
+    public function storeskills(Request $request)
     {
         $data = $request->validate([
             'name' => 'required|string|max:255',
