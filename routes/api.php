@@ -2,10 +2,10 @@
 
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\StudentAuthController;
-use App\Http\Controllers\CompanyAuthController;
-
+use App\Http\Controllers\api\auth\CompanyAuthController;
+use App\Http\Controllers\api\auth\StudentAuthController;
+use App\Http\Controllers\Api\JobController;
+use App\Http\Controllers\API\JobPostController;
 
 // Test Route
 Route::get('/test', function () {
@@ -24,9 +24,7 @@ Route::prefix('company')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [CompanyAuthController::class, 'logout']);
-        Route::get('/profile', function (Request $request) {
-            return $request->user();
-        });
+      
     });
 });
 
@@ -42,8 +40,28 @@ Route::prefix('student')->group(function () {
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [StudentAuthController::class, 'logout']);
-        Route::get('/profile', function (Request $request) {
-            return $request->user();
-        });
+       
     });
 });    
+
+
+
+
+
+
+Route::get('/jobs', [JobPostController::class, 'index']);
+Route::get('/jobs/{id}', [JobPostController::class, 'show']);
+
+// فقط شركة مسجلة دخول تقدر تنشر وظيفة
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/jobs', [JobPostController::class, 'store']);
+});
+
+
+
+
+use App\Http\Controllers\API\JobApplicationController;
+
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/jobs/{id}/apply', [JobApplicationController::class, 'apply']);
+});

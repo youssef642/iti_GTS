@@ -1,34 +1,38 @@
 <?php
-namespace App\Http\Controllers;
 
-use App\Models\Student;
+
+
+namespace App\Http\Controllers\api\auth;
+
+use App\Models\Company;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Support\Facades\Auth;
+use App\Http\Controllers\Controller;
 
-class StudentAuthController extends Controller
+class CompanyAuthController extends Controller
 {
     public function register(Request $request)
     {
         $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:students',
-            'password' => 'required|min:6|confirmed',
+            'name' => 'required',
+            'email' => 'required|email|unique:companies',
+            'password' => 'required|min:6|confirmed'
         ]);
 
-        $student = Student::create([
+        $company = Company::create([
             'name' => $request->name,
             'email' => $request->email,
-            'password' => bcrypt($request->password),
+            'password' => Hash::make($request->password),
         ]);
 
-        $token = $student->createToken('student_token')->plainTextToken;
+        $token = $company->createToken('auth_token')->plainTextToken;
 
         return response()->json([
-            'status' => true,
-            'message' => 'Student registered successfully',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+            'message' => 'User registered successfully',
+            'company' => $company,
+            'token' => $token,
+        ], 201);
     }
 
     public function login(Request $request)
@@ -38,16 +42,16 @@ class StudentAuthController extends Controller
             'password' => 'required'
         ]);
 
-        $student = Student::where('email', $request->email)->first();
+        $company = Company::where('email', $request->email)->first();
 
-        if (! $student || ! Hash::check($request->password, $student->password)) {
+        if (!$company || !Hash::check($request->password, $company->password)) {
             return response()->json([
                 'status' => false,
                 'message' => 'Invalid credentials'
             ], 401);
         }
 
-        $token = $student->createToken('student_token')->plainTextToken;
+        $token = $company->createToken('auth_token')->plainTextToken;
 
         return response()->json([
             'status' => true,
@@ -63,7 +67,7 @@ class StudentAuthController extends Controller
 
         return response()->json([
             'status' => true,
-            'message' => 'Logged out successfully',
+            'message' => 'Logged out successfully'
         ]);
     }
 }
