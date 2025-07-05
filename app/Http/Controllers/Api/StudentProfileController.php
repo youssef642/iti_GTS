@@ -14,9 +14,9 @@ class StudentProfileController extends Controller
      */
     public function index()
     {
-        $student = Student::where('user_id', Auth::id())->first();
+        $student = Student::where('id', Auth::id())->first();
         if (!$student) {
-            return response()->json(['message' => 'Student profile not found'], 404);
+            return response()->json(['message' => 'profile not found'], 404);
         }else {
             return response()->json($student);
         }
@@ -48,7 +48,7 @@ class StudentProfileController extends Controller
 
     public function storeEducation(Request $request)
     {
-        $student = Student::where('user_id', Auth::id())->first();
+        $student = Student::where('id', Auth::id())->first();
         if (!$student) {
             return response()->json(['message' => 'Student profile not found'], 404);
         }
@@ -67,7 +67,7 @@ class StudentProfileController extends Controller
     }
     public function getEducation()
     {
-        $student = Student::where('user_id', Auth::id())->first();
+        $student = Student::where('id', Auth::id())->first();
         if (!$student) {
             return response()->json(['message' => 'Student profile not found'], 404);
         }

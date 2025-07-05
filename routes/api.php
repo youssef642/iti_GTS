@@ -4,25 +4,21 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Api\SkillsController;
 use App\Http\Controllers\Api\studentProfileController;
+use App\Http\Controllers\StudentAuthController;
+use App\Http\Controllers\CompanyAuthController;
 
-// Route::get('/user', function (Request $request) {
-//     return $request->user();
-// })->middleware('auth:sanctum');
 
 Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [studentProfileController::class, 'index']);
-    Route::post('/experience', [studentProfileController::class, 'storeexperience']);
     Route::post('/education', [studentProfileController::class, 'storeEducation']);
     Route::get('/education', [studentProfileController::class, 'getEducation']);
 
     Route::post('/skills', [SkillsController::class, 'storeskills']);
-    Route::get('/skills', [SkillsController::class, 'skills']);
-    Route::delete('/skills', [SkillsController::class, 'deleteSkill']);
+    Route::get('/skills', [SkillsController::class, 'index']);
+    Route::delete('/skill/{id}', [SkillsController::class, 'destroy']);
 });
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\StudentAuthController;
-use App\Http\Controllers\CompanyAuthController;
+
 
 
 // Test Route
