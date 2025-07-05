@@ -33,8 +33,10 @@ class JobPostController extends Controller
     // نشر وظيفة جديدة (من قبل شركة)
     public function store(Request $request)
     {
+        $company_id=auth()->user->id;
         $validated = $request->validate([
-            'title' => 'required|string|max:255',
+            'company_id'=>$company_id,
+            'title' => 'required|s`tring|max:255',
             'description' => 'required|string',
             'requirements' => 'nullable|string',
             'responsibilities' => 'nullable|string',
@@ -46,11 +48,6 @@ class JobPostController extends Controller
             'experience' => 'nullable|string',
             'published' => 'boolean',
         ]);
-
-        // نفترض إن الشركة مسجّلة دخول باستخدام sanctum
-        $company = \Illuminate\Support\Facades\Auth::user();
-
-        $validated['company_id'] = $company->id;
 
         $job = JobPost::create($validated);
 
