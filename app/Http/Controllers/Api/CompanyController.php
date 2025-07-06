@@ -3,105 +3,79 @@
 namespace App\Http\Controllers\Api;
 
 use App\Http\Controllers\Controller;
-use Illuminate\Http\Request;
-use App\Models\Company;
-use App\Models\JobApplication;
+use App\Http\Requests\UpdateCompanyRequest;
+use App\Http\Requests\CreateJobRequest;
+use App\Http\Requests\UpdateJobRequest;
+use App\Http\Resources\CompanyResource;
+use App\Http\Resources\JobPostResource;
+use App\Http\Resources\JobApplicationResource;
 use Illuminate\Support\Facades\Auth;
+use App\Models\Company;
 use App\Models\JobPost;
-
-
+use App\Models\JobApplication;
 
 class CompanyController extends Controller
 {
-    
     public function index()
-    {
-        $company = Company::find(Auth::id());
-        return response()->json($company);
-    }
-
-   
-    public function update(Request $request)
     {
         $company = Company::find(Auth::id());
         if (!$company) {
             return response()->json(['message' => 'Company not found'], 404);
         }
 
-        $data = $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'phone' => 'required|string|max:15',
-            'address' => 'required|string|max:255',
-            'description' => 'nullable|string|max:1000',
-            'linkedin' => 'nullable|url|max:255',
-            'website' => 'nullable|url|max:255',
-            'facebook' => 'nullable|url|max:255',
-        
-        ]);
+        return new CompanyResource($company);
+    }
 
-        $company->fill($data);
+    public function update(UpdateCompanyRequest $request)
+    {
+        $company = Company::find(Auth::id());
+        if (!$company) {
+            return response()->json(['message' => 'Company not found'], 404);
+        }
+
+        $company->fill($request->validated());
         $company->save();
 
-        return response()->json(['message' => 'Company updated successfully', 'company' => $company]);
-    }
-
-    public function company_jobs(){
-        $jobs = JobPost::where('company_id', Auth::id())->get();
-        return response()->json($jobs);
-    }
-
-    public function create_job(Request $request)
-    {
-        
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'requirements' => 'nullable|string',
-            'responsibilities' => 'nullable|string',
-            'min_salary' => 'nullable|numeric',
-            'max_salary' => 'nullable|numeric',
-            'location' => 'nullable|string',
-            'type' => 'required|string',
-            'is_remote' => 'boolean',
-            'experience' => 'nullable|string',
-            'published' => 'boolean',
+        return response()->json([
+            'message' => 'Company updated successfully',
+            'company' => new CompanyResource($company),
         ]);
-
-        $validated['company_id'] = Auth::id();
-
-        $job = JobPost::create($validated);
-
-        return response()->json(['message' => 'Job created successfully', 'data' => $job], 201);
     }
 
-   
-    public function update_job(Request $request, $jobId)
+    public function company_jobs()
+    {
+        $jobs = JobPost::where('company_id', Auth::id())->get();
+        return JobPostResource::collection($jobs);
+    }
+
+    public function create_job(CreateJobRequest $request)
+    {
+        $data = $request->validated();
+        $data['company_id'] = Auth::id();
+
+        $job = JobPost::create($data);
+
+        return response()->json([
+            'message' => 'Job created successfully',
+            'data' => new JobPostResource($job)
+        ], 201);
+    }
+
+    public function update_job(UpdateJobRequest $request, $jobId)
     {
         $job = JobPost::find($jobId);
         if (!$job) {
             return response()->json(['message' => 'Job not found'], 404);
         }
 
-        $data = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'requirements' => 'nullable|string',
-            'responsibilities' => 'nullable|string',
-            'min_salary' => 'nullable|numeric',
-            'max_salary' => 'nullable|numeric',
-            'location' => 'nullable|string',
-            'type' => 'required|string',
-            'is_remote' => 'boolean',
-            'published' => 'boolean',
-        ]);
-
-        $job->fill($data);
+        $job->fill($request->validated());
         $job->save();
 
-        return response()->json(['message' => 'Job updated successfully', 'job' => $job]);
+        return response()->json([
+            'message' => 'Job updated successfully',
+            'job' => new JobPostResource($job)
+        ]);
     }
-
 
     public function job_applications($jobId)
     {
@@ -111,8 +85,7 @@ class CompanyController extends Controller
         }
 
         $applications = JobApplication::with('user')->where('job_id', $jobId)->get();
-        return response()->json($applications);
+
+        return JobApplicationResource::collection($applications);
     }
-
-
 }
