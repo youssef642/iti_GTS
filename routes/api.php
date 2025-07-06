@@ -24,9 +24,7 @@ Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () 
     Route::delete('/skills', [SkillsController::class, 'deleteSkill']);
 });
 
-use App\Http\Controllers\AuthController;
-use App\Http\Controllers\StudentAuthController;
-use App\Http\Controllers\CompanyAuthController;
+
 
 
 // Test Route
