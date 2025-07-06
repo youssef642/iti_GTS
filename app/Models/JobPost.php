@@ -37,4 +37,5 @@ class JobPost extends Model
     {
         return $this->hasMany(JobApplication::class);
     }
+    
 }

@@ -24,10 +24,7 @@ Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () 
 
 
 
-// Test Route
-Route::get('/test', function () {
-    return response()->json(['message' => 'API is working!']);
-});
+
 
     
 Route::prefix('company')->middleware('auth:sanctum')->group(function () {
@@ -36,6 +33,8 @@ Route::prefix('company')->middleware('auth:sanctum')->group(function () {
     Route::get('/jobs', [CompanyController::class, 'company_jobs']);
     Route::post('/jobs', [CompanyController::class, 'create_job']);
     Route::get('/jobs/{jobId}/applications', [CompanyController::class, 'getJobApplications']);
+    Route::put('/jobs/{jobId}', [CompanyController::class, 'update_job']);
+
 });
 
 

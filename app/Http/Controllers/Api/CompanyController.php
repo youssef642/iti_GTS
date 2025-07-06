@@ -16,14 +16,14 @@ class CompanyController extends Controller
     
     public function index()
     {
-        $company = Company::where('id', Auth::id())->first();
+        $company = Company::find(Auth::id());
         return response()->json($company);
     }
 
    
     public function update(Request $request)
     {
-        $company = Company::where('id', Auth::id())->first();
+        $company = Company::find(Auth::id());
         if (!$company) {
             return response()->json(['message' => 'Company not found'], 404);
         }
@@ -75,6 +75,32 @@ class CompanyController extends Controller
         return response()->json(['message' => 'Job created successfully', 'data' => $job], 201);
     }
 
+   
+    public function update_job(Request $request, $jobId)
+    {
+        $job = JobPost::find($jobId);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+
+        $data = $request->validate([
+            'title' => 'required|string|max:255',
+            'description' => 'required|string',
+            'requirements' => 'nullable|string',
+            'responsibilities' => 'nullable|string',
+            'min_salary' => 'nullable|numeric',
+            'max_salary' => 'nullable|numeric',
+            'location' => 'nullable|string',
+            'type' => 'required|string',
+            'is_remote' => 'boolean',
+            'published' => 'boolean',
+        ]);
+
+        $job->fill($data);
+        $job->save();
+
+        return response()->json(['message' => 'Job updated successfully', 'job' => $job]);
+    }
 
 
     public function job_applications($jobId)
@@ -84,7 +110,7 @@ class CompanyController extends Controller
             return response()->json(['message' => 'Job not found'], 404);
         }
 
-        $applications = JobApplication::where('job_id', $jobId)->get(); // Assuming JobPost has a relationship with applications
+        $applications = JobApplication::with('user')->where('job_id', $jobId)->get();
         return response()->json($applications);
     }
 

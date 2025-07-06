@@ -13,4 +13,12 @@ class Company extends Authenticatable
     protected $fillable = ['name', 'email', 'password', 'phone', 'website', 'address', 'specialization', 'image'];
 
     protected $hidden = ['password', 'remember_token'];
+
+public function jobPosts()
+{
+    return $this->hasMany(JobPost::class);
+}
+public function students(){
+    return $this->hasMany(Student::class);
+}
 }

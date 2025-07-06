@@ -18,4 +18,18 @@ class Student extends Authenticatable
     ];
 
     protected $hidden = ['password'];
+
+    public function skills()
+    {
+        return $this->hasMany(Skill::class);
+    }
+    public function jobApplications()
+    {
+        return $this->hasMany(JobApplication::class, 'student_id');
+    }
+    public function company()
+    {
+        return $this->belongsTo(Company::class, 'company_id');
+    }
+
 }
