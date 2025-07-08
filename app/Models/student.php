@@ -31,5 +31,9 @@ class Student extends Authenticatable
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
+    public function experience()
+    {
+        return $this->hasMany(Experience::class, 'student_id');
+    }
 
 }
