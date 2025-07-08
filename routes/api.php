@@ -10,30 +10,36 @@ use App\Http\Controllers\Api\studentProfileController;
 use App\Http\Controllers\api\auth\StudentAuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\API\JobApplicationController;
+use App\Http\Controllers\ExperienceController;
+use App\Models\JobPost;
 
 Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [studentProfileController::class, 'index']);
-    // Route::post('/education', [studentProfileController::class, 'storeEducation']);
-    // Route::get('/education', [studentProfileController::class, 'getEducation']);
-
+    Route::put('/', [studentProfileController::class, 'update']);
+    Route::get('/experience', [ExperienceController::class, 'getExperience']);
+    Route::post('/experience', [ExperienceController::class, 'storeExperience']);
+    Route::put('/experience/{id}', [ExperienceController::class, 'updateExperience']);
+    Route::delete('/experience/{id}', [ExperienceController::class, 'destroyExperience']);
     Route::post('/skills', [SkillsController::class, 'storeskills']);
     Route::get('/skills', [SkillsController::class, 'index']);
     Route::delete('/skill/{id}', [SkillsController::class, 'destroy']);
+    Route::post('/jobs/{id}/apply', [JobApplicationController::class, 'apply']);
+    Route::get('/jobs/applied', [JobApplicationController::class, 'getApplications']);
+    Route::get('/jobs', [JobPostController::class, 'student_index']);
+    Route::get('/jobs/{id}', [JobPostController::class, 'show']);
+
 });
-
-
-
-
 
 
     
 Route::prefix('company')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [CompanyController::class, 'index']);
     Route::put('/', [CompanyController::class, 'update']);
-    Route::get('/jobs', [CompanyController::class, 'company_jobs']);
-    Route::post('/jobs', [CompanyController::class, 'create_job']);
-    Route::get('/jobs/{jobId}/applications', [CompanyController::class, 'getJobApplications']);
-    Route::put('/jobs/{jobId}', [CompanyController::class, 'update_job']);
+    Route::get('/jobs', [JobPostController::class, 'company_jobs']);
+    Route::get('/jobs/{jobId}/applications', [JobApplicationController::class, 'company_job_applications']);
+    Route::put('/jobs/{jobId}', [JobPostController::class, 'update_job']);
+    Route::post('/jobs', [JobPostController::class, 'storejob']);
+    Route::delete('/jobs/{id}', [JobPostController::class, 'destroy']);
 
 });
 
@@ -74,15 +80,6 @@ Route::prefix('student')->group(function () {
 // Job Post Routes
 Route::get('/jobs', [JobPostController::class, 'index']);
 Route::get('/jobs/{id}', [JobPostController::class, 'show']);
-
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/jobs', [JobPostController::class, 'store']);
-});
+Route::post('/jobs', [JobPostController::class, 'store']);
 
 
-
-
-// Job Application Routes
-Route::middleware('auth:sanctum')->group(function () {
-    Route::post('/jobs/{id}/apply', [JobApplicationController::class, 'apply']);
-});

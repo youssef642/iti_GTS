@@ -3,23 +3,23 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApplyJobRequest;
 use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\JobApplication;
 use Illuminate\Support\Facades\Auth;
+use App\Http\Resources\JobApplicationResource;
 
 class JobApplicationController extends Controller
 {
-    public function apply(Request $request, $jobId)
+    public function studentApply(ApplyJobRequest $request, $jobId)
     {
         $student = Auth::user();
 
-        // تأكد إن الوظيفة موجودة
         $job = JobPost::findOrFail($jobId);
 
-        // تحقق إن الطالب لم يقدم بالفعل
         $exists = JobApplication::where('student_id', $student->id)
-                                ->where('job_post_id', $job->id)
+                                ->where('job_id', $job->id)
                                 ->exists();
 
         if ($exists) {
@@ -27,17 +27,34 @@ class JobApplicationController extends Controller
                 'message' => 'You have already applied to this job.'
             ], 409);
         }
+        $data = $request->validated();
+        $data['student_id'] = $student->id;
+        $data['job_id'] = $job->id;
 
-        // التقديم
-        $application = JobApplication::create([
-            'student_id' => $student->id,
-            'job_post_id' => $job->id,
-            'cover_letter' => $request->input('cover_letter'),
-        ]);
+        $application = JobApplication::create($data);
 
         return response()->json([
             'message' => 'Application submitted successfully.',
             'application' => $application
         ], 201);
+    }
+    public function getStudentApplications()
+    {
+        $student = Auth::user();
+
+        $applications = JobApplication::where('student_id', $student->id)->get();
+
+        return response()->json($applications);
+    }
+    public function company_job_applications($jobId)
+    {
+        $job = JobPost::find($jobId);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+
+        $applications = JobApplication::with('user')->where('job_id', $jobId)->get();
+
+        return JobApplicationResource::collection($applications);
     }
 }
