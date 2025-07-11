@@ -18,6 +18,7 @@ class CompanyAuthController extends Controller
             'name' => 'required',
             'email' => 'required|email|unique:companies',
             'password' => 'required|min:6|confirmed'
+
         ]);
 
         $company = Company::create([
@@ -56,7 +57,7 @@ class CompanyAuthController extends Controller
         return response()->json([
             'status' => true,
             'message' => 'Login successful',
-            'access_token' => $token,
+            'token' => $token,
             'token_type' => 'Bearer',
         ]);
     }

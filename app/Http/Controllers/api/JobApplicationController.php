@@ -30,6 +30,7 @@ class JobApplicationController extends Controller
         $data = $request->validated();
         $data['student_id'] = $student->id;
         $data['job_id'] = $job->id;
+        
 
         $application = JobApplication::create($data);
 
