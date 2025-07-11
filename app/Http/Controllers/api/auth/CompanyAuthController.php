@@ -12,28 +12,46 @@ use App\Http\Controllers\Controller;
 
 class CompanyAuthController extends Controller
 {
-    public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required',
-            'email' => 'required|email|unique:companies',
-            'password' => 'required|min:6|confirmed'
-        ]);
+public function register(Request $request)
+{
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email|unique:companies',
+        'password' => 'required|min:6|confirmed',
+        'phone' => 'nullable|string',
+        'type' => 'nullable|string',
+        'country' => 'nullable|string',
+        'address' => 'nullable|string',
+        'description' => 'nullable|string',
+        'founded_at' => 'nullable|date',
+        'linkedin' => 'nullable|url',
+        'website' => 'nullable|url',
+        'facebook' => 'nullable|url',
+    ]);
 
-        $company = Company::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => Hash::make($request->password),
-        ]);
+    $company = Company::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => Hash::make($request->password),
+        'phone' => $request->phone,
+        'type' => $request->type,
+        'country' => $request->country,
+        'address' => $request->address,
+        'description' => $request->description,
+        'founded_at' => $request->founded_at,
+        'linkedin' => $request->linkedin,
+        'website' => $request->website,
+        'facebook' => $request->facebook,
+    ]);
 
-        $token = $company->createToken('auth_token')->plainTextToken;
+    $token = $company->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'message' => 'User registered successfully',
-            'company' => $company,
-            'token' => $token,
-        ], 201);
-    }
+    return response()->json([
+        'message' => 'Company registered successfully',
+        'company' => $company,
+        'token' => $token,
+    ], 201);
+}
 
     public function login(Request $request)
     {

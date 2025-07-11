@@ -9,28 +9,39 @@ use App\Http\Controllers\Controller;
 class StudentAuthController extends Controller
 {
     public function register(Request $request)
-    {
-        $request->validate([
-            'name' => 'required|string',
-            'email' => 'required|email|unique:students',
-            'password' => 'required|min:6|confirmed',
-        ]);
+{
+    $request->validate([
+        'name' => 'required|string',
+        'email' => 'required|email|unique:students',
+        'password' => 'required|min:6|confirmed',
+        'faculty' => 'nullable|string',
+        'university' => 'nullable|string',
+        'track' => 'nullable|string',
+        'image' => 'nullable|string',  
+        'company_id' => 'nullable|exists:companies,id',
+    ]);
 
-        $student = Student::create([
-            'name' => $request->name,
-            'email' => $request->email,
-            'password' => bcrypt($request->password),
-        ]);
+    $student = Student::create([
+        'name' => $request->name,
+        'email' => $request->email,
+        'password' => bcrypt($request->password),
+        'faculty' => $request->faculty,
+        'university' => $request->university,
+        'track' => $request->track,
+        'image' => $request->image,
+        'company_id' => $request->company_id,
+    ]);
 
-        $token = $student->createToken('student_token')->plainTextToken;
+    $token = $student->createToken('student_token')->plainTextToken;
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Student registered successfully',
-            'access_token' => $token,
-            'token_type' => 'Bearer',
-        ]);
-    }
+    return response()->json([
+        'status' => true,
+        'message' => 'Student registered successfully',
+        'access_token' => $token,
+        'token_type' => 'Bearer',
+    ]);
+}
+
 
     public function login(Request $request)
     {

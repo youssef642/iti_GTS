@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller;
@@ -33,10 +34,10 @@ class JobPostController extends Controller
     // نشر وظيفة جديدة (من قبل شركة)
     public function store(Request $request)
     {
-        $company_id=auth()->user->id;
+        $company_id = $request->user()->id;
+
         $validated = $request->validate([
-            'company_id'=>$company_id,
-            'title' => 'required|s`tring|max:255',
+            'title' => 'required|string|max:255',
             'description' => 'required|string',
             'requirements' => 'nullable|string',
             'responsibilities' => 'nullable|string',
@@ -49,8 +50,13 @@ class JobPostController extends Controller
             'published' => 'boolean',
         ]);
 
+        $validated['company_id'] = $company_id;
+
         $job = JobPost::create($validated);
 
-        return response()->json(['message' => 'Job created successfully', 'data' => $job], 201);
+        return response()->json([
+            'message' => 'Job created successfully',
+            'data' => $job
+        ], 201);
     }
 }

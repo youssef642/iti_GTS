@@ -86,3 +86,7 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::middleware('auth:sanctum')->group(function () {
     Route::post('/jobs/{id}/apply', [JobApplicationController::class, 'apply']);
 });
+
+
+
+Route::post('/job-applications/{id}/status', [JobApplicationController::class, 'updateStatus']);

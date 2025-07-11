@@ -14,13 +14,12 @@ class JobApplication extends Model
         'cover_letter',
     ];
 
-    public function job()
-    {
-        return $this->belongsTo(JobPost::class, 'job_post_id');
-    }
-
+   public function jobPost()
+{
+    return $this->belongsTo(JobPost::class);
+}
     public function student()
     {
-        return $this->belongsTo(User::class, 'student_id');
+        return $this->belongsTo(Student::class, 'student_id');
     }
 }
