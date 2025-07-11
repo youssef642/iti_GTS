@@ -11,7 +11,7 @@ use Laravel\Sanctum\HasApiTokens;
 class Student extends Authenticatable
 {
     use HasApiTokens, Notifiable;
-
+//con
     protected $fillable = [
         'name', 'email', 'password', 'phone', 'age', 'gender',
         'faculty', 'university', 'track', 'image', 'CV'
