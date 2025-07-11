@@ -11,7 +11,7 @@ class ApplyJobRequest extends FormRequest
      */
     public function authorize(): bool
     {
-        return false;
+        return true;
     }
 
     /**
@@ -22,10 +22,7 @@ class ApplyJobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'name' => 'required|string|max:255',
-            'email' => 'required|email|max:255',
-            'message' => 'required|string|max:1000',
-            'cv' => 'required|file|mimes:pdf,doc,docx'
+            'cover_letter' => 'required|string|max:1000',
         ];
     }
 }

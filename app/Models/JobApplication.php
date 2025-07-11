@@ -14,6 +14,7 @@ class JobApplication extends Model
         'student_id',
         'job_post_id',
         'cover_letter',
+        'cv',
     ];
 
     public function job()
