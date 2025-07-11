@@ -18,18 +18,28 @@ class JobApplicationController extends Controller
 
         $job = JobPost::findOrFail($jobId);
 
+
         $exists = JobApplication::where('student_id', $student->id)
-                                ->where('job_id', $job->id)
-                                ->exists();
+            ->where('job_post_id', $job->id)
+            ->exists();
 
         if ($exists) {
             return response()->json([
                 'message' => 'You have already applied to this job.'
             ], 409);
         }
+
         $data = $request->validated();
+
+        if ($request->hasFile('cv')) {
+            $cvPath = $request->file('cv')->store('cvs');
+            $data['cv'] = $cvPath;
+        } else {
+            return response()->json(['error' => 'CV file not received'], 422);
+        }
+
         $data['student_id'] = $student->id;
-        $data['job_id'] = $job->id;
+        $data['job_post_id'] = $job->id;
 
         $application = JobApplication::create($data);
 
@@ -38,6 +48,7 @@ class JobApplicationController extends Controller
             'application' => $application
         ], 201);
     }
+
     public function getStudentApplications()
     {
         $student = Auth::user();

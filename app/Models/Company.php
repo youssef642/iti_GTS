@@ -10,7 +10,8 @@ class Company extends Authenticatable
 {
     use HasApiTokens, Notifiable;
 
-    protected $fillable = ['name', 'email', 'password', 'phone', 'website', 'address', 'specialization', 'image'];
+    protected $fillable = ['name', 'email', 'password', 'phone', 'website', 'address', 'specialization', 'image',
+        'description', 'facebook', 'linkedin'];
 
     protected $hidden = ['password', 'remember_token'];
 
