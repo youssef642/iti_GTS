@@ -9,7 +9,8 @@ use App\Http\Controllers\Api\studentProfileController;
 use App\Http\Controllers\api\auth\StudentAuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\API\JobApplicationController;
-use App\Http\Controllers\ExperienceController;
+use App\Http\Controllers\Api\ExperienceController;
+use App\Models\experience;
 
 Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [studentProfileController::class, 'index']);
@@ -32,6 +33,7 @@ Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () 
 Route::prefix('company')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [CompanyController::class, 'index']);
     Route::put('/', [CompanyController::class, 'update']);
+    Route::get('/{id}', [CompanyController::class, 'get_company_by_id']);
     Route::get('/jobs', [JobPostController::class, 'company_jobs']);
     Route::get('/jobs/{jobId}/applications', [JobApplicationController::class, 'company_job_applications']);
     Route::put('/jobs/{jobId}', [JobPostController::class, 'update_job']);

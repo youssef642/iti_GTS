@@ -1,6 +1,6 @@
 <?php
 
-// app/Models/Student.php
+//  app/Models/Student.php
 
 namespace App\Models;
 
