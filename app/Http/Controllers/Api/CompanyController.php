@@ -25,6 +25,15 @@ class CompanyController extends Controller
 
         return new CompanyResource($company);
     }
+    public function get_company_by_id($id)
+    {
+        $company = Company::find($id);
+        if (!$company) {
+            return response()->json(['message' => 'Company not found'], 404);
+        }
+
+        return new CompanyResource($company);
+    }
 
     public function update(UpdateCompanyRequest $request)
     {
