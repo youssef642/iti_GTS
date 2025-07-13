@@ -11,6 +11,7 @@ use App\Http\Resources\JobApplicationResource;
 use App\Http\Requests\CreateJobRequest;
 use App\Http\Requests\UpdateJobRequest;
 
+
 class JobPostController extends Controller
 {
     public function __construct()
@@ -37,7 +38,7 @@ class JobPostController extends Controller
 
     public function storejob(CreateJobRequest $request)
     {
-        $company_id = auth()->user->id;
+        $company_id = auth::user()->id;
         $validated = $request->validated();
         $validated['company_id'] = $company_id;
 

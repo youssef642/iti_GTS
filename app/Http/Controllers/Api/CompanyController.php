@@ -42,7 +42,17 @@ class CompanyController extends Controller
             return response()->json(['message' => 'Company not found'], 404);
         }
 
-        $company->fill($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('companies/images', 'public');
+        }
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('companies/cover_images', 'public');
+        }
+
+        $company->fill($data);
         $company->save();
 
         return response()->json([
@@ -50,7 +60,4 @@ class CompanyController extends Controller
             'company' => new CompanyResource($company),
         ]);
     }
-   
-
-   
 }

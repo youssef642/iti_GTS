@@ -14,11 +14,17 @@ class CompanyResource extends JsonResource
             'email' => $this->email,
             'phone' => $this->phone,
             'address' => $this->address,
-            'description' => $this->description,
+            'about' => $this->about,
             'linkedin' => $this->linkedin,
             'website' => $this->website,
             'facebook' => $this->facebook,
             'created_at' => $this->created_at?->toDateTimeString(),
+            'cover_image' => $this->cover_image,
+            'type' => $this->type,
+            'team_size' => $this->team_size,
+            'founded' => $this->founded,
+            'instagram' => $this->instagram,
+            'specialization' => $this->specialization, // Assuming 'specialization' is a field in the companies table
         ];
     }
 }
