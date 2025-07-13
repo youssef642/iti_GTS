@@ -4,7 +4,14 @@ namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use App\Models\JobPost;
+use App\Models\JobApplication;
+use App\Http\Resources\JobPostResource;
+use App\Http\Resources\JobApplicationResource;
+use App\Http\Requests\CreateJobRequest;
+use App\Http\Requests\UpdateJobRequest;
+
 
 class JobPostController extends Controller
 {
@@ -13,13 +20,12 @@ class JobPostController extends Controller
         $this->middleware('auth:sanctum')->only(['store']);
     }
 
-    // جلب كل الوظائف
-    public function index()
+    public function student_index()
     {
-        return JobPost::with('company')->get();
+        $jobs = JobPost::with('company')->get();
+        return JobPostResource::collection($jobs);
     }
 
-    // جلب وظيفة واحدة بالتفصيل
     public function show($id)
     {
         $job = JobPost::with('company')->find($id);
@@ -28,27 +34,15 @@ class JobPostController extends Controller
             return response()->json(['message' => 'Job not found'], 404);
         }
 
-        return $job;
+        return new JobPostResource($job);
     }
 
-    // نشر وظيفة جديدة (من قبل شركة)
-    public function store(Request $request)
+    public function storejob(CreateJobRequest $request)
     {
-        $company_id = $request->user()->id;
 
-        $validated = $request->validate([
-            'title' => 'required|string|max:255',
-            'description' => 'required|string',
-            'requirements' => 'nullable|string',
-            'responsibilities' => 'nullable|string',
-            'min_salary' => 'nullable|numeric',
-            'max_salary' => 'nullable|numeric',
-            'location' => 'nullable|string',
-            'type' => 'required|string',
-            'is_remote' => 'boolean',
-            'experience' => 'nullable|string',
-            'published' => 'boolean',
-        ]);
+        $company_id = auth::user()->id;
+        $validated = $request->validated();
+        $validated['company_id'] = $company_id;
 
         $validated['company_id'] = $company_id;
 
@@ -58,5 +52,44 @@ class JobPostController extends Controller
             'message' => 'Job created successfully',
             'data' => $job
         ], 201);
+    }
+    
+
+
+    
+    public function company_jobs()
+    {
+        $jobs = JobPost::where('company_id', Auth::id())->get();
+        return JobPostResource::collection($jobs);
+    }
+
+
+    public function update_job(UpdateJobRequest $request, $jobId)
+    {
+        $job = JobPost::find($jobId);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+
+        $job->fill($request->validated());
+        $job->save();
+
+        return response()->json([
+            'message' => 'Job updated successfully',
+            'job' => new JobPostResource($job)
+        ]);
+    }
+
+   
+    public function destroy($id)
+    {
+        $job = JobPost::find($id);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+
+        $job->delete();
+
+        return response()->json(['message' => 'Job deleted successfully'], 200);
     }
 }

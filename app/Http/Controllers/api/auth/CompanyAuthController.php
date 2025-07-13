@@ -74,7 +74,7 @@ public function register(Request $request)
         return response()->json([
             'status' => true,
             'message' => 'Login successful',
-            'access_token' => $token,
+            'token' => $token,
             'token_type' => 'Bearer',
         ]);
     }

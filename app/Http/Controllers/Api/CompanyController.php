@@ -25,6 +25,15 @@ class CompanyController extends Controller
 
         return new CompanyResource($company);
     }
+    public function get_company_by_id($id)
+    {
+        $company = Company::find($id);
+        if (!$company) {
+            return response()->json(['message' => 'Company not found'], 404);
+        }
+
+        return new CompanyResource($company);
+    }
 
     public function update(UpdateCompanyRequest $request)
     {
@@ -33,59 +42,22 @@ class CompanyController extends Controller
             return response()->json(['message' => 'Company not found'], 404);
         }
 
-        $company->fill($request->validated());
+        $data = $request->validated();
+
+        if ($request->hasFile('image')) {
+            $data['image'] = $request->file('image')->store('companies/images', 'public');
+        }
+
+        if ($request->hasFile('cover_image')) {
+            $data['cover_image'] = $request->file('cover_image')->store('companies/cover_images', 'public');
+        }
+
+        $company->fill($data);
         $company->save();
 
         return response()->json([
             'message' => 'Company updated successfully',
             'company' => new CompanyResource($company),
         ]);
-    }
-
-    public function company_jobs()
-    {
-        $jobs = JobPost::where('company_id', Auth::id())->get();
-        return JobPostResource::collection($jobs);
-    }
-
-    public function create_job(CreateJobRequest $request)
-    {
-        $data = $request->validated();
-        $data['company_id'] = Auth::id();
-
-        $job = JobPost::create($data);
-
-        return response()->json([
-            'message' => 'Job created successfully',
-            'data' => new JobPostResource($job)
-        ], 201);
-    }
-
-    public function update_job(UpdateJobRequest $request, $jobId)
-    {
-        $job = JobPost::find($jobId);
-        if (!$job) {
-            return response()->json(['message' => 'Job not found'], 404);
-        }
-
-        $job->fill($request->validated());
-        $job->save();
-
-        return response()->json([
-            'message' => 'Job updated successfully',
-            'job' => new JobPostResource($job)
-        ]);
-    }
-
-    public function job_applications($jobId)
-    {
-        $job = JobPost::find($jobId);
-        if (!$job) {
-            return response()->json(['message' => 'Job not found'], 404);
-        }
-
-        $applications = JobApplication::with('user')->where('job_id', $jobId)->get();
-
-        return JobApplicationResource::collection($applications);
     }
 }

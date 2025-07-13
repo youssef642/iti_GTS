@@ -3,27 +3,27 @@
 namespace App\Http\Controllers\API;
 
 use App\Http\Controllers\Controller;
+use App\Http\Requests\ApplyJobRequest;
 use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\JobApplication;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Mail;
 use App\Mail\ApplicationStatusChanged;
+use App\Http\Resources\JobApplicationResource;
 
 class JobApplicationController extends Controller
 {
-    // تقديم طلب لوظيفة مع رفع CV
-    public function apply(Request $request, $jobId)
+    public function studentApply(ApplyJobRequest $request, $jobId)
     {
         $student = Auth::user();
 
-        // تأكد إن الوظيفة موجودة
         $job = JobPost::findOrFail($jobId);
 
-        // تحقق إن الطالب لم يقدم بالفعل
+
         $exists = JobApplication::where('student_id', $student->id)
-                                ->where('job_post_id', $job->id)
-                                ->exists();
+            ->where('job_post_id', $job->id)
+            ->exists();
 
         if ($exists) {
             return response()->json([
@@ -31,32 +31,28 @@ class JobApplicationController extends Controller
             ], 409);
         }
 
-        // تحقق بيانات الريكوست، مع التحقق من ملف الـ CV
-        $request->validate([
-            'cover_letter' => 'nullable|string',
-            'cv' => 'nullable|file|mimes:pdf,doc,docx|max:2048',  // السماح برفع ملفات pdf و word حتى 2 ميجا
-        ]);
 
-        // رفع ملف الـ CV لو موجود
-        $cvPath = null;
+        $data = $request->validated();
+
         if ($request->hasFile('cv')) {
-            $cvPath = $request->file('cv')->store('cvs', 'public');
+            $cvPath = $request->file('cv')->store('cvs');
+            $data['cv'] = $cvPath;
+        } else {
+            return response()->json(['error' => 'CV file not received'], 422);
         }
 
-        // إنشاء الابليكشن
-        $application = JobApplication::create([
-            'student_id' => $student->id,
-            'job_post_id' => $job->id,
-            'cover_letter' => $request->input('cover_letter'),
-            'cv_path' => $cvPath,
-            'status' => 'pending', // الحالة الافتراضية
-        ]);
+        $data['student_id'] = $student->id;
+        $data['job_post_id'] = $job->id;
+
+        $application = JobApplication::create($data);
+
 
         return response()->json([
             'message' => 'Application submitted successfully.',
             'application' => $application
         ], 201);
     }
+
 
     // تحديث حالة طلب التقديم (قبول/رفض) وإرسال إيميل للطالب
     public function updateStatus(Request $request, $applicationId)
@@ -76,5 +72,25 @@ class JobApplicationController extends Controller
             'message' => 'Application status updated and email sent.',
             'application' => $application,
         ]);
+
+    public function getStudentApplications()
+    {
+        $student = Auth::user();
+
+        $applications = JobApplication::where('student_id', $student->id)->get();
+
+        return response()->json($applications);
+    }
+    public function company_job_applications($jobId)
+    {
+        $job = JobPost::find($jobId);
+        if (!$job) {
+            return response()->json(['message' => 'Job not found'], 404);
+        }
+
+        $applications = JobApplication::with('user')->where('job_id', $jobId)->get();
+
+        return JobApplicationResource::collection($applications);
+
     }
 }

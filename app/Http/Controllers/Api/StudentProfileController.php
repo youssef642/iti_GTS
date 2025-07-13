@@ -18,18 +18,18 @@ class StudentProfileController extends Controller
       
             return response()->json($student);
         
-
     }
-
-
+    public function update(Request $request)
+    {
+        $student = Student::where('id', Auth::id())->first();
+        if ($student) {
+            $student->update($request->all());
+            return response()->json(['message' => 'Profile updated successfully']);
+        }
+        return response()->json(['message' => 'Student not found'], 404);
+    }
     
 
-    // public function getEducation()
-    // {
-    //     $student = Student::where('id', Auth::id())->first();
 
-    //     $education = json_decode($student->education, true);
-    //     return response()->json($education);
-    // }
 
 }
