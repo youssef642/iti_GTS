@@ -8,6 +8,8 @@ use Illuminate\Http\Request;
 use App\Models\JobPost;
 use App\Models\JobApplication;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\ApplicationStatusChanged;
 use App\Http\Resources\JobApplicationResource;
 
 class JobApplicationController extends Controller
@@ -29,6 +31,7 @@ class JobApplicationController extends Controller
             ], 409);
         }
 
+
         $data = $request->validated();
 
         if ($request->hasFile('cv')) {
@@ -43,11 +46,32 @@ class JobApplicationController extends Controller
 
         $application = JobApplication::create($data);
 
+
         return response()->json([
             'message' => 'Application submitted successfully.',
             'application' => $application
         ], 201);
     }
+
+
+    // تحديث حالة طلب التقديم (قبول/رفض) وإرسال إيميل للطالب
+    public function updateStatus(Request $request, $applicationId)
+    {
+        $request->validate([
+            'status' => 'required|in:accepted,rejected',
+        ]);
+
+        $application = JobApplication::findOrFail($applicationId);
+        $application->status = $request->status;
+        $application->save();
+
+        // إرسال الإيميل للطالب
+        Mail::to($application->student->email)->send(new ApplicationStatusChanged($application));
+
+        return response()->json([
+            'message' => 'Application status updated and email sent.',
+            'application' => $application,
+        ]);
 
     public function getStudentApplications()
     {
@@ -67,5 +91,6 @@ class JobApplicationController extends Controller
         $applications = JobApplication::with('user')->where('job_id', $jobId)->get();
 
         return JobApplicationResource::collection($applications);
+
     }
 }

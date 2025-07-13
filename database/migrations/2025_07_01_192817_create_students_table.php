@@ -13,20 +13,18 @@ return new class extends Migration
     {
         Schema::create('students', function (Blueprint $table) {
             $table->id();
-            $table->timestamps();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
-            $table->string('phone')->nullable();
-            $table->unsignedInteger('age')->nullable();
-            $table->enum('gender', ['male', 'female'])->nullable();
             $table->string('faculty')->nullable();
             $table->string('university')->nullable();
             $table->string('track')->nullable();
             $table->string('image')->nullable();
-            $table->string('CV')->nullable();
-            
+          $table->unsignedBigInteger('company_id')->nullable();
 
+$table->foreign('company_id')->references('id')->on('companies')->onDelete('set null');
+
+            $table->timestamps();
         });
     }
 

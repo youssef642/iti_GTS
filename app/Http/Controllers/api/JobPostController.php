@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\API;
 
 use Illuminate\Routing\Controller;
@@ -38,13 +39,19 @@ class JobPostController extends Controller
 
     public function storejob(CreateJobRequest $request)
     {
+
         $company_id = auth::user()->id;
         $validated = $request->validated();
         $validated['company_id'] = $company_id;
 
+        $validated['company_id'] = $company_id;
+
         $job = JobPost::create($validated);
 
-        return response()->json(['message' => 'Job created successfully', 'data' => $job], 201);
+        return response()->json([
+            'message' => 'Job created successfully',
+            'data' => $job
+        ], 201);
     }
     
 
