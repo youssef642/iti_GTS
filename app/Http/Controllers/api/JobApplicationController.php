@@ -75,13 +75,15 @@ class JobApplicationController extends Controller
     }
 
     public function getStudentApplications()
-    {
-        $student = Auth::user();
+{
+    $student = Auth::user();
 
-        $applications = JobApplication::where('student_id', $student->id)->get();
+    $applications = JobApplication::with('jobPost.Company')  
+        ->where('student_id', $student->id)
+        ->get();
 
-        return response()->json($applications);
-    }
+    return response()->json($applications);
+}
     public function company_job_applications($jobId)
     {
         $job = JobPost::find($jobId);
@@ -89,9 +91,19 @@ class JobApplicationController extends Controller
             return response()->json(['message' => 'Job not found'], 404);
         }
 
-        $applications = JobApplication::with('user')->where('job_id', $jobId)->get();
+        $applications = JobApplication::with('user','jobPost')->where('job_id', $jobId)->get();
 
         return JobApplicationResource::collection($applications);
 
     }
+public function cancelApplication($applicationId)
+{
+    $application = JobApplication::find($applicationId);
+    if (!$application) {
+        return response()->json(['message' => 'Application not found'], 404);
+    }
+    $application->delete();
+
+    return response()->json("Application cancelled successfully");
+}
 }

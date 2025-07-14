@@ -71,35 +71,6 @@ return [
         // ],
     ],
 
-    'guards' => [
-    'api' => [
-        'driver' => 'sanctum',
-        'provider' => 'companies',
-    ],
-],
-
-'providers' => [
-    'companies' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Company::class,
-    ],
-],
-
-'providers' => [
-    'students' => [
-        'driver' => 'eloquent',
-        'model' => App\Models\Student::class,
-    ],
-    
-],
-
-'guards' => [
-    'student' => [
-        'driver' => 'sanctum',
-        'provider' => 'students',
-    ],
-],
-
     /*
     |--------------------------------------------------------------------------
     | Resetting Passwords
