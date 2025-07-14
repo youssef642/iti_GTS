@@ -14,6 +14,10 @@ return new class extends Migration
         $table = Schema::table('students', function (Blueprint $table) {
             $table->string('duration_track')->nullable();
             $table->string('address')->nullable();
+            $table->enum('gender', ['male', 'female'])->nullable();
+            $table->string('age')->nullable();
+            $table->string('phone')->nullable();
+
           
         });
     }
@@ -23,9 +27,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        $table = Schema::table('students', function (Blueprint $table) {
-            $table->dropColumn('duration_track');
-            $table->dropColumn('address');
-        });
+       
     }
 };
