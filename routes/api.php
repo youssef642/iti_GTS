@@ -47,7 +47,7 @@ Route::prefix('company')->middleware('auth:sanctum')->group(function () {
 // Authentication company Routes
 Route::prefix('company')->group(function () {
     Route::post('/register', [CompanyAuthController::class, 'register']);
-    Route::post('/login', [CompanyAuthController::class, 'login']);
+    // Route::post('/login', [CompanyAuthController::class, 'login']);
 
     Route::middleware('auth:sanctum')->group(function () {
         Route::post('/logout', [CompanyAuthController::class, 'logout']);

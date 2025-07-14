@@ -11,8 +11,9 @@ use App\Http\Resources\JobPostResource;
 use App\Http\Resources\JobApplicationResource;
 use Illuminate\Support\Facades\Auth;
 use App\Models\Company;
-use App\Models\JobPost;
-use App\Models\JobApplication;
+use Illuminate\Support\Facades\Log;
+
+
 
 class CompanyController extends Controller
 {
@@ -37,27 +38,39 @@ class CompanyController extends Controller
 
     public function update(UpdateCompanyRequest $request)
     {
+        Log::info('Data received:', $request->all()); 
+
         $company = Company::find(Auth::id());
         if (!$company) {
             return response()->json(['message' => 'Company not found'], 404);
         }
 
         $data = $request->validated();
+        Log::info('Validated data:', $data);
 
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('companies/images', 'public');
+            $data['image'] = $request->file('image')->store('company','public');
         }
 
         if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')->store('companies/cover_images', 'public');
+            $data['cover_image'] = $request->file('cover_image')->store('company','public');
         }
 
+        Log::info('Data before save:', $data);
         $company->fill($data);
         $company->save();
+        Log::info('Company after save:', $company->toArray());
 
-        return response()->json([
+        $response = [
             'message' => 'Company updated successfully',
             'company' => new CompanyResource($company),
-        ]);
+            'debug' => [
+                'received_data' => $request->all(),
+                'validated_data' => $data,
+                'saved_data' => $company->toArray()
+            ]
+        ];
+        
+        return response()->json($response);
     }
 }

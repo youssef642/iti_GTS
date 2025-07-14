@@ -1,3 +1,4 @@
+
 <?php
 
 use Illuminate\Database\Migrations\Migration;
@@ -26,7 +27,6 @@ return new class extends Migration
             $table->string('website')->nullable();
             $table->string('facebook')->nullable();
             $table->timestamps();
-
         });
     }
 
