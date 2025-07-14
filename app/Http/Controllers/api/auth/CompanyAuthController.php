@@ -5,6 +5,7 @@
 namespace App\Http\Controllers\api\auth;
 
 use App\Models\Company;
+use App\Rules\UniqueEmailAcrossTables;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Support\Facades\Auth;
@@ -16,7 +17,7 @@ public function register(Request $request)
 {
     $request->validate([
         'name' => 'required|string',
-        'email' => 'required|email|unique:companies',
+        'email' => ['required', 'email', 'unique:companies', new UniqueEmailAcrossTables('company')],
         'password' => 'required|min:6|confirmed',
         'phone' => 'nullable|string',
         'type' => 'nullable|string',
@@ -53,31 +54,31 @@ public function register(Request $request)
     ], 201);
 }
 
-    public function login(Request $request)
-    {
-        $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
-        ]);
+    // public function login(Request $request)
+    // {
+    //     $request->validate([
+    //         'email' => 'required|email',
+    //         'password' => 'required'
+    //     ]);
 
-        $company = Company::where('email', $request->email)->first();
+    //     $company = Company::where('email', $request->email)->first();
 
-        if (!$company || !Hash::check($request->password, $company->password)) {
-            return response()->json([
-                'status' => false,
-                'message' => 'Invalid credentials'
-            ], 401);
-        }
+    //     if (!$company || !Hash::check($request->password, $company->password)) {
+    //         return response()->json([
+    //             'status' => false,
+    //             'message' => 'Invalid credentials'
+    //         ], 401);
+    //     }
 
-        $token = $company->createToken('auth_token')->plainTextToken;
+    //     $token = $company->createToken('auth_token')->plainTextToken;
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Login successful',
-            'token' => $token,
-            'token_type' => 'Bearer',
-        ]);
-    }
+    //     return response()->json([
+    //         'status' => true,
+    //         'message' => 'Login successful',
+    //         'token' => $token,
+    //         'token_type' => 'Bearer',
+    //     ]);
+    // }
 
     public function logout(Request $request)
     {

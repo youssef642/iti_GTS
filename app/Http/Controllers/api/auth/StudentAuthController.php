@@ -2,7 +2,9 @@
 namespace App\Http\Controllers\api\auth;
 
 use App\Models\Student;
+use App\Models\Company;
 use Illuminate\Http\Request;
+use App\Rules\UniqueEmailAcrossTables;
 use Illuminate\Support\Facades\Hash;
 use App\Http\Controllers\Controller;
 
@@ -13,7 +15,7 @@ class StudentAuthController extends Controller
     {
         $request->validate([
             'name' => 'required|string',
-            'email' => 'required|email|unique:students',
+            'email' => ['required', 'email', 'unique:students', new UniqueEmailAcrossTables('student')],
             'password' => 'required|min:6|confirmed',
             'university' => 'nullable|string',
             'faculty' => 'nullable|string',
@@ -60,27 +62,42 @@ class StudentAuthController extends Controller
     public function login(Request $request)
     {
         $request->validate([
-            'email' => 'required|email',
-            'password' => 'required'
+            'email' => ['required', 'email'],
+            'password' => ['required'],
         ]);
 
         $student = Student::where('email', $request->email)->first();
 
-        if (! $student || ! Hash::check($request->password, $student->password)) {
+        if ($student && Hash::check($request->password, $student->password)) {
+            $token = $student->createToken('student_token')->plainTextToken;
+            $user_type = 'student';
             return response()->json([
-                'status' => false,
-                'message' => 'Invalid credentials'
-            ], 401);
+                'status' => true,
+                'message' => 'Login successful',
+                'user_type' => $user_type,
+                'token' => $token,
+                'token_type' => 'Bearer',
+            ]);
         }
 
-        $token = $student->createToken('student_token')->plainTextToken;
+        $company = Company::where('email', $request->email)->first();
 
-        return response()->json([
-            'status' => true,
-            'message' => 'Login successful',
-            'token' => $token,
-            'token_type' => 'Bearer',
-        ]);
+        if ($company && Hash::check($request->password, $company->password)) {
+            $token = $company->createToken('company_token')->plainTextToken;
+            $user_type = 'company';
+            return response()->json([
+                'status' => true,
+                'message' => 'Login successful',
+                'user_type' => $user_type,
+                'token' => $token,
+                'token_type' => 'Bearer',
+            ]);
+        }
+
+       return response()->json([
+            'status' => false,
+            'message' => 'Invalid credentials'
+        ], 401);
     }
 
     public function logout(Request $request)

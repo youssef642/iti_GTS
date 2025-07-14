@@ -72,6 +72,7 @@ class JobApplicationController extends Controller
             'message' => 'Application status updated and email sent.',
             'application' => $application,
         ]);
+    }
 
     public function getStudentApplications()
     {
