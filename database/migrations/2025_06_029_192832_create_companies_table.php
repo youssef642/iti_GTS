@@ -13,7 +13,7 @@ return new class extends Migration
     public function up(): void
     {
         Schema::create('companies', function (Blueprint $table) {
-            $table->id();
+              $table->id();
             $table->string('name');
             $table->string('email')->unique();
             $table->string('password');
@@ -22,7 +22,6 @@ return new class extends Migration
             $table->string('country')->nullable();
             $table->string('address')->nullable();
             $table->text('description')->nullable();
-            $table->date('founded_at')->nullable();
             $table->string('linkedin')->nullable();
             $table->string('website')->nullable();
             $table->string('facebook')->nullable();
