@@ -13,13 +13,10 @@ return new class extends Migration
     {
         Schema::table('companies', function (Blueprint $table) {
             $table->string('cover_image')->nullable();
-            $table->string('type')->nullable();
             $table->integer('team_size')->nullable();
             $table->date('founded')->nullable();
             $table->string('instagram')->nullable();
             $table->string('about')->nullable();
-            $table->string('facebook')->nullable();
-            $table->string('linkedin')->nullable();
 
 
            
