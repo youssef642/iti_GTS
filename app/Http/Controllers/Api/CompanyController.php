@@ -19,7 +19,7 @@ class CompanyController extends Controller
 {
     public function index()
     {
-        $company = Company::find(Auth::id());
+        $company = Company::where('id',Auth::id())->first();
         if (!$company) {
             return response()->json(['message' => 'Company not found'], 404);
         }

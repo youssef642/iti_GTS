@@ -11,14 +11,12 @@ use App\Http\Resources\JobPostResource;
 use App\Http\Resources\JobApplicationResource;
 use App\Http\Requests\CreateJobRequest;
 use App\Http\Requests\UpdateJobRequest;
+use Illuminate\Support\Facades\Log;
 
 
 class JobPostController extends Controller
 {
-    public function __construct()
-    {
-        $this->middleware('auth:sanctum')->only(['store']);
-    }
+  
 
     public function student_index()
     {
@@ -57,6 +55,7 @@ class JobPostController extends Controller
 
 
     
+
     public function company_jobs()
     {
         $jobs = JobPost::where('company_id', Auth::id())->get();
@@ -91,5 +90,16 @@ class JobPostController extends Controller
         $job->delete();
 
         return response()->json(['message' => 'Job deleted successfully'], 200);
+    }
+    public function statistics(){
+        $company_id = Auth::id();
+        $total_jobs = JobPost::where('company_id', $company_id)->count();
+        $total_applications = JobApplication::whereHas('jobPost', function ($query) use ($company_id) {
+            $query->where('company_id', $company_id);
+        })->count();
+            return response()->json([
+            'total_jobs' => $total_jobs,
+            'total_applications' => $total_applications
+        ]);
     }
 }
