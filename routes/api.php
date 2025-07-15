@@ -30,6 +30,9 @@ Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () 
 
 });
 
+Route::get('company/jobs', [JobPostController::class, 'company_jobs']);
+Route::get('company/statistics', [JobPostController::class, 'statistics']);
+
 
 Route::prefix('company')->middleware('auth:sanctum')->group(function () {
     Route::get('/', [CompanyController::class, 'index']);
