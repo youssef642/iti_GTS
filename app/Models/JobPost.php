@@ -26,14 +26,12 @@ class JobPost extends Model
         'company_id',
     ];
 
-    // علاقة: وظيفة تتبع شركة
     public function company()
     {
         return $this->belongsTo(Company::class, 'company_id');
     }
 
-    // علاقة: وظيفة لها طلبات تقديم
-    public function applications()
+    public function jobApplications()
     {
         return $this->hasMany(JobApplication::class);
     }

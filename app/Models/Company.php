@@ -22,4 +22,8 @@ public function jobPosts()
 public function students(){
     return $this->hasMany(Student::class);
 }
+public function jobApplications()
+{
+    return $this->hasMany(JobApplication::class);
+}
 }

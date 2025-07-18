@@ -19,6 +19,19 @@ class JobApplicationResource extends JsonResource
             ] : null,
             'cv' => $this->cv,
             'cover_letter' => $this->message,
+            'job_post' => [
+                'id' => $this->jobPost->id,
+                'title' => $this->jobPost->title,
+            ],
+            'student' => [
+                'id' => $this->student->id,
+                'name' => $this->student->name,
+                'email' => $this->student->email,
+                'image' => $this->student->image,
+            ],
+            'cv' => $this->cv ? asset('storage/' . $this->cv) : null,
+            'cover_letter' => $this->cover_letter,
+            'status' => $this->status,
             'created_at' => $this->created_at?->toDateTimeString(),
         ];
     }
