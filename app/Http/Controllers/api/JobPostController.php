@@ -65,18 +65,25 @@ class JobPostController extends Controller
 
     public function update_job(UpdateJobRequest $request, $jobId)
     {
-        $job = JobPost::find($jobId);
-        if (!$job) {
-            return response()->json(['message' => 'Job not found'], 404);
-        }
+        
+       $job = JobPost::find($jobId);
 
-        $job->fill($request->validated());
-        $job->save();
+    if (!$job) {
+        return response()->json(['message' => 'Job not found'], 404);
+    }
 
-        return response()->json([
-            'message' => 'Job updated successfully',
-            'job' => new JobPostResource($job)
-        ]);
+    // تحقق إن الشركة المالكة هي اللي بتعدل
+    if ($job->company_id !== Auth::id()) {
+        return response()->json(['message' => 'Unauthorized'], 403);
+    }
+
+    $job->fill($request->validated());
+    $job->save();
+
+    return response()->json([
+        'message' => 'Job updated successfully',
+        'job' => new JobPostResource($job)
+    ]);
     }
 
    

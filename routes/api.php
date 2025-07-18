@@ -10,6 +10,7 @@ use App\Http\Controllers\api\auth\StudentAuthController;
 use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\API\JobApplicationController;
 use App\Http\Controllers\Api\ExperienceController;
+use App\Http\Controllers\Api\PaymentController;
 use App\Models\experience;
 
 Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
@@ -21,7 +22,7 @@ Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () 
     Route::delete('/experience/{id}', [ExperienceController::class, 'destroyExperience']);
     Route::post('/skills', [SkillsController::class, 'storeskills']);
     Route::get('/skills', [SkillsController::class, 'index']);
-    Route::delete('/skill/{id}', [SkillsController::class, 'destroy']);
+    Route::delete('/skills/{id}', [SkillsController::class, 'destroy']);
     Route::post('/jobs/{id}/apply', [JobApplicationController::class, 'studentApply']);
     Route::get('/jobs/applied', [JobApplicationController::class, 'getStudentApplications']);
     Route::get('/jobs', [JobPostController::class, 'student_index']);
@@ -72,9 +73,10 @@ Route::prefix('student')->group(function () {
 });    
 
 
+//payment routes
 
 
-
+Route::post('/payment-intent', [PaymentController::class, 'createPaymentIntent']);
 
 
 
