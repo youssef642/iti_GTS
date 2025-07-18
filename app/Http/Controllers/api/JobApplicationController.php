@@ -84,6 +84,13 @@ class JobApplicationController extends Controller
 
     return response()->json($applications);
 }
+   public function company_job_applications($jobId)
+{
+    $job = JobPost::find($jobId);
+    if (!$job) {
+        return response()->json(['message' => 'Job not found'], 404);
+    }
+
     public function company_job_applications($jobId)
     {
         $job = JobPost::find($jobId);
@@ -93,9 +100,12 @@ class JobApplicationController extends Controller
 
         $applications = JobApplication::with('student','jobPost')->where('job_post_id', $jobId)->get();
 
-        return JobApplicationResource::collection($applications);
+    $applications = JobApplication::with('student', 'jobPost.company')
+        ->where('job_post_id', $jobId)
+        ->get();
 
-    }
+    return JobApplicationResource::collection($applications);
+}
 public function cancelApplication($applicationId)
 {
     $application = JobApplication::find($applicationId);

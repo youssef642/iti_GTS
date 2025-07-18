@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
@@ -9,7 +10,7 @@ class JobApplication extends Model
 {
     use HasFactory;
     use HasApiTokens;
-    
+
     protected $fillable = [
         'student_id',
         'job_post_id',
@@ -17,10 +18,10 @@ class JobApplication extends Model
         'cv',
     ];
 
-   public function jobPost()
-{
-    return $this->belongsTo(JobPost::class);
-}
+    public function jobPost()
+    {
+        return $this->belongsTo(JobPost::class);
+    }
     public function student()
     {
         return $this->belongsTo(Student::class, 'student_id');
