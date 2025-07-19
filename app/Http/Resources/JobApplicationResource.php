@@ -11,14 +11,27 @@ class JobApplicationResource extends JsonResource
         return [
             'id' => $this->id,
             'job_id' => $this->job_id,
-            'user_id' => $this->user_id,
-            'user' => [
-                'id' => $this->user->id,
-                'name' => $this->user->name,
-                'email' => $this->user->email,
-            ],
+            'student_id' => $this->student_id,
+            'student' => $this->student ? [
+                'id' => $this->student->id,
+                'name' => $this->student->name,
+                'email' => $this->student->email,
+            ] : null,
             'cv' => $this->cv,
             'cover_letter' => $this->message,
+            'job_post' => [
+                'id' => $this->jobPost->id,
+                'title' => $this->jobPost->title,
+            ],
+            'student' => [
+                'id' => $this->student->id,
+                'name' => $this->student->name,
+                'email' => $this->student->email,
+                'image' => $this->student->image,
+            ],
+            'cv' => $this->cv ? asset('storage/' . $this->cv) : null,
+            'cover_letter' => $this->cover_letter,
+            'status' => $this->status,
             'created_at' => $this->created_at?->toDateTimeString(),
         ];
     }
