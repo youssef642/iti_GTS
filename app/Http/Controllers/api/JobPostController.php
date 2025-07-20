@@ -58,8 +58,15 @@ class JobPostController extends Controller
 
     public function company_jobs()
     {
-        $jobs = JobPost::where('company_id', Auth::id())->get();
-        return JobPostResource::collection($jobs);
+        $total_applications = JobApplication::whereHas('jobPost', function ($query) {
+            $query->where('company_id', Auth::id());
+        })->count();
+        $jobs = JobPost::withCount('jobApplications')->where('company_id', Auth::id())->get();
+
+        return response()->json([
+            'jobs' => JobPostResource::collection($jobs),
+            'total_applications' => $total_applications
+        ]);
     }
 
 
@@ -108,5 +115,13 @@ class JobPostController extends Controller
             'total_jobs' => $total_jobs,
             'total_applications' => $total_applications
         ]);
+    }
+    public function completeApplication($id)
+    {
+        $application = JobApplication::where('student_id', Auth::id())->where('id', $id)->first();
+        $job=JobPost::where('id', $application->job_post_id)->first();
+        $job->status = 'completed';
+        $job->save();
+        return response()->json(['message' => 'Application completed successfully'], 200);
     }
 }

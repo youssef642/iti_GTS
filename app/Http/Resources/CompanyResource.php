@@ -24,7 +24,8 @@ class CompanyResource extends JsonResource
             'team_size' => $this->team_size,
             'founded' => $this->founded,
             'instagram' => $this->instagram,
-            'specialization' => $this->specialization, // Assuming 'specialization' is a field in the companies table
+            'specialization' => $this->specialization,
+            'image' => $this->image,
         ];
     }
 }
