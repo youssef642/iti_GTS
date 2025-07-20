@@ -27,6 +27,8 @@ class JobPostResource extends JsonResource
             'experience' => $this->experience,
             'published' => $this->published,
             'created_at' => $this->created_at?->toDateTimeString(),
+            'status' => $this->status,
+            'applications' => $this->whenCounted('jobApplications'),
         ];
     }
 }

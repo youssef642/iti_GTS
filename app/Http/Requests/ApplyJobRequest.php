@@ -22,7 +22,24 @@ class ApplyJobRequest extends FormRequest
     public function rules(): array
     {
         return [
-            'cover_letter' => 'required|string|max:1000',
+            'cover_letter' => 'required|string|min:10|max:2000',
+            'cv' => 'required|file|mimes:pdf,doc,docx|max:5120', // 5MB max
+        ];
+    }
+
+    /**
+     * Get custom error messages for validation rules.
+     */
+    public function messages(): array
+    {
+        return [
+            'cover_letter.required' => 'A cover letter is required.',
+            'cover_letter.min' => 'Cover letter must be at least 10 characters long.',
+            'cover_letter.max' => 'Cover letter cannot exceed 2000 characters.',
+            'cv.required' => 'A CV file is required.',
+            'cv.file' => 'CV must be a valid file.',
+            'cv.mimes' => 'CV must be a PDF, DOC, or DOCX file.',
+            'cv.max' => 'CV file size must be less than 5MB.',
         ];
     }
 }

@@ -13,8 +13,6 @@ use Illuminate\Support\Facades\Auth;
 use App\Models\Company;
 use Illuminate\Support\Facades\Log;
 
-
-
 class CompanyController extends Controller
 {
     public function index()
@@ -38,37 +36,40 @@ class CompanyController extends Controller
 
     public function update(UpdateCompanyRequest $request)
     {
-        Log::info('Data received:', $request->all()); 
-
         $company = Company::find(Auth::id());
         if (!$company) {
             return response()->json(['message' => 'Company not found'], 404);
         }
 
         $data = $request->validated();
-        Log::info('Validated data:', $data);
-
+        // Handle file uploads
         if ($request->hasFile('image')) {
-            $data['image'] = $request->file('image')->store('company','public');
+            try {
+                $data['image'] = $request->file('image')->store('company','public');
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Image upload failed: ' . $e->getMessage()], 500);
+            }
         }
 
         if ($request->hasFile('cover_image')) {
-            $data['cover_image'] = $request->file('cover_image')->store('company','public');
+            try {
+                $data['cover_image'] = $request->file('cover_image')->store('company','public');
+            } catch (\Exception $e) {
+                return response()->json(['message' => 'Cover image upload failed: ' . $e->getMessage()], 500);
+            }
         }
-
-        Log::info('Data before save:', $data);
-        $company->fill($data);
-        $company->save();
-        Log::info('Company after save:', $company->toArray());
+        
+        try {
+            $company->fill($data);
+            $company->save();
+        } catch (\Exception $e) {
+            return response()->json(['message' => 'Failed to save company data: ' . $e->getMessage()], 500);
+        }
 
         $response = [
             'message' => 'Company updated successfully',
             'company' => new CompanyResource($company),
-            'debug' => [
-                'received_data' => $request->all(),
-                'validated_data' => $data,
-                'saved_data' => $company->toArray()
-            ]
+            
         ];
         
         return response()->json($response);
