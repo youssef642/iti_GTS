@@ -77,7 +77,9 @@ Route::prefix('student')->group(function () {
 //payment routes
 
 
-Route::post('/payment-intent', [PaymentController::class, 'createPaymentIntent']);
+Route::middleware('auth:sanctum')->group(function () {
+    Route::post('/pay', [PaymentController::class, 'payStudent']);
+});
 
 
 
