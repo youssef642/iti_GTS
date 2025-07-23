@@ -42,23 +42,8 @@ class CompanyController extends Controller
         }
 
         $data = $request->validated();
-        // Handle file uploads
-        if ($request->hasFile('image')) {
-            try {
-                $data['image'] = $request->file('image')->store('company','public');
-            } catch (\Exception $e) {
-                return response()->json(['message' => 'Image upload failed: ' . $e->getMessage()], 500);
-            }
-        }
-
-        if ($request->hasFile('cover_image')) {
-            try {
-                $data['cover_image'] = $request->file('cover_image')->store('company','public');
-            } catch (\Exception $e) {
-                return response()->json(['message' => 'Cover image upload failed: ' . $e->getMessage()], 500);
-            }
-        }
-        
+    
+    
         try {
             $company->fill($data);
             $company->save();

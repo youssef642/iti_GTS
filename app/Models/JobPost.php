@@ -15,7 +15,6 @@ class JobPost extends Model
         'requirements',
         'responsibilities',
         'min_salary',
-        'max_salary',
         'location',
         'type',
         'is_remote',

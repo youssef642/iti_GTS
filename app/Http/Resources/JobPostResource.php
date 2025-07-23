@@ -20,7 +20,7 @@ class JobPostResource extends JsonResource
             'requirements' => $this->requirements,
             'responsibilities' => $this->responsibilities,
             'min_salary' => $this->min_salary,
-            'max_salary' => $this->max_salary,
+            // 'max_salary' => $this->max_salary,
             'location' => $this->location,
             'type' => $this->type,
             'is_remote' => $this->is_remote,

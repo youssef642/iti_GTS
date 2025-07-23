@@ -23,8 +23,8 @@ class StudentAuthController extends Controller
             'age' => 'nullable|integer',
             'phone' => 'nullable|string',
             'address' => 'nullable|string',
-            'track_name' => 'nullable|string',
-            'interests' => 'nullable|string',
+            'track' => 'nullable|string',
+            'duration_track' => 'nullable|string',
             'image' => 'nullable|image|max:2048',
         ]);
 

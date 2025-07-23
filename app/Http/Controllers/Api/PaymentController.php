@@ -66,6 +66,8 @@ class PaymentController extends Controller
                 'payment_intent_id' => $paymentIntent->id,
                 'status' => 'succeeded',
             ]);
+            $application->jobPost->status = 'paid';
+            $application->jobPost->save();
 
             return response()->json(['message' => 'payment success']);
         } catch (\Exception $e) {

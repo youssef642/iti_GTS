@@ -28,6 +28,11 @@ public function register(Request $request)
         'linkedin' => 'nullable|url',
         'website' => 'nullable|url',
         'facebook' => 'nullable|url',
+        'instagram' => 'nullable|url',
+        'specialization' => 'nullable|string',
+        'team_size' => 'nullable|string',
+        'founded' => 'nullable|date',
+        'about' => 'nullable|string',
     ]);
 
     $company = Company::create([
@@ -43,6 +48,11 @@ public function register(Request $request)
         'linkedin' => $request->linkedin,
         'website' => $request->website,
         'facebook' => $request->facebook,
+        'instagram' => $request->instagram,
+        'specialization' => $request->specialization,
+        'team_size' => $request->team_size,
+        'founded' => $request->founded,
+        'about' => $request->about,
     ]);
 
     $token = $company->createToken('auth_token')->plainTextToken;

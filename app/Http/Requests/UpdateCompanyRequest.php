@@ -18,8 +18,6 @@ return [
     'phone' => 'nullable|string|max:15',
     'address' => 'nullable|string|max:255',
     'specialization' => 'nullable|string|max:255',
-    'image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
-    'cover_image' => 'nullable|image|mimes:jpeg,png,jpg,gif|max:5120', // 5MB max
     'type' => 'nullable|string|max:255',
     'team_size' => 'nullable|string|max:255',
     'founded' => 'nullable|max:255',

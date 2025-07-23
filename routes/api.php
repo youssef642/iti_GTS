@@ -29,7 +29,7 @@ Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () 
     Route::get('/jobs/{id}', [JobPostController::class, 'show']);
     Route::delete('/jobs/applications/{id}', [JobApplicationController::class, 'cancelApplication']);
     Route::put('/jobs/applications/{id}/complete', [JobPostController::class, 'completeApplication']);
-
+    Route::get('/jobs/applications/{id}', [JobApplicationController::class, 'getApplication']);
 });
 
 Route::get('company/jobs', [JobPostController::class, 'company_jobs']);

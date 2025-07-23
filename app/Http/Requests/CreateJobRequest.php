@@ -19,7 +19,6 @@ class CreateJobRequest extends FormRequest
             'requirements' => 'nullable|string',
             'responsibilities' => 'nullable|string',
             'min_salary' => 'nullable|numeric',
-            'max_salary' => 'nullable|numeric',
             'location' => 'nullable|string',
             'type' => 'required|string',
             'is_remote' => 'boolean',

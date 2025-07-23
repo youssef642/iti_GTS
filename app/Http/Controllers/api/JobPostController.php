@@ -20,7 +20,7 @@ class JobPostController extends Controller
 
     public function student_index()
     {
-        $jobs = JobPost::with('company')->get();
+        $jobs = JobPost::where('status', 'active')->with('company')->get();
         return JobPostResource::collection($jobs);
     }
 
