@@ -195,4 +195,14 @@ public function cancelApplication($applicationId)
     }
     return response()->json($application);
 }
+
+public function getAllApplications()
+{
+    $applications = JobApplication::all();
+    $count = $applications->count();
+    return response()->json([
+        'count' => $count,
+        'applications' => $applications
+    ]);
+}
 }

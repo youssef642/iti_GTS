@@ -11,6 +11,8 @@ use App\Http\Controllers\Api\CompanyController;
 use App\Http\Controllers\API\JobApplicationController;
 use App\Http\Controllers\Api\ExperienceController;
 use App\Http\Controllers\Api\PaymentController;
+use App\Http\Controllers\Api\Auth\AdminAuthController;
+use App\Http\Controllers\Api\AdminController;
 use App\Models\experience;
 
 Route::prefix('student-profile')->middleware('auth:sanctum')->group(function () {
@@ -83,4 +85,16 @@ Route::middleware('auth:sanctum')->group(function () {
 
 
 
+Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
+   
+});
+Route::get('/students', [StudentProfileController::class, 'getAllStudents']);
+Route::get('/companies', [CompanyController::class, 'getAllCompanies']);
+Route::get('/applications', [JobApplicationController::class, 'getAllApplications']);
+Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
+
+
+Route::get('/admins', [AdminController::class, 'index']);         // عرض كل الأدمن
+Route::post('/admins', [AdminController::class, 'store']);        // إضافة أدمن
+Route::delete('/admins/{id}', [AdminController::class, 'destroy']); // حذف أدمن
