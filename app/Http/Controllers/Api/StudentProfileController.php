@@ -30,6 +30,15 @@ class StudentProfileController extends Controller
     }
     
 
-
+    public function getAllStudents()
+    {
+        $students = Student::all();
+        $count = $students->count();
+    
+        return response()->json([
+            'count' => $count,
+            'students' => $students
+        ]);
+    }
 
 }

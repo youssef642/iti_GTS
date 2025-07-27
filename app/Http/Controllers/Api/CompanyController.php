@@ -59,4 +59,14 @@ class CompanyController extends Controller
         
         return response()->json($response);
     }
+    public function getAllCompanies()
+    {
+        $companies = Company::all();
+        $count = $companies->count();
+    
+        return response()->json([
+            'count' => $count,
+            'companies' => $companies
+        ]);
+    }
 }
