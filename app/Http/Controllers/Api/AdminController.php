@@ -6,10 +6,10 @@ use App\Http\Controllers\Controller;
 use App\Models\Admin;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use App\Models\JobPost;
 
 class AdminController extends Controller
 {
-    // ✅ 1. إنشاء Admin جديد
     public function store(Request $request)
     {
         $request->validate([
@@ -49,4 +49,14 @@ class AdminController extends Controller
             'admins' => $admins
         ]);
     }
+    public function getalljobs()
+    {
+        $jobs = JobPost::orderBy('created_at', 'desc')->with('company')->withCount('jobApplications')->get();
+        return response()->json([
+            'count' => $jobs->count(),
+            'jobs' => $jobs
+        ]);
+    }
+    
+    
 }

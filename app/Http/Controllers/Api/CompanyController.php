@@ -61,12 +61,25 @@ class CompanyController extends Controller
     }
     public function getAllCompanies()
     {
-        $companies = Company::all();
+        // Eager load jobPosts and jobApplications
+        $companies = Company::with(['jobPosts.jobApplications'])->get();
+
+        // Add application count per company
+        foreach ($companies as $company) {
+            $company->job_applications_count = $company->jobPosts->sum(function ($job) {
+                return $job->jobApplications->count();
+            });
+        }
+
         $count = $companies->count();
-    
+
+        // Total applications across all companies
+        $totalApplications = $companies->sum('job_applications_count');
+
         return response()->json([
             'count' => $count,
-            'companies' => $companies
+            'companies' => $companies,
+            'total_applications' => $totalApplications
         ]);
     }
 }
