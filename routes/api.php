@@ -88,9 +88,9 @@ Route::middleware('auth:sanctum')->group(function () {
 Route::prefix('admin')->middleware('auth:sanctum')->group(function () {
    
 });
-Route::get('/students', [StudentProfileController::class, 'getAllStudents']);
-Route::get('/companies', [CompanyController::class, 'getAllCompanies']);
-Route::get('/applications', [JobApplicationController::class, 'getAllApplications']);
+Route::get('/admin/students', [StudentProfileController::class, 'getAllStudents']);
+Route::get('/admin/companies', [CompanyController::class, 'getAllCompanies']);
+Route::get('/admin/applications', [JobApplicationController::class, 'getAllApplications']);
 Route::post('/admin/login', [AdminAuthController::class, 'login']);
 
 
@@ -98,3 +98,4 @@ Route::post('/admin/login', [AdminAuthController::class, 'login']);
 Route::get('/admins', [AdminController::class, 'index']);         // عرض كل الأدمن
 Route::post('/admins', [AdminController::class, 'store']);        // إضافة أدمن
 Route::delete('/admins/{id}', [AdminController::class, 'destroy']); // حذف أدمن
+Route::get('/admins/jobs', [AdminController::class, 'getalljobs']); // عرض كل الوظائف

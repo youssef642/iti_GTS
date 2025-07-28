@@ -11,6 +11,7 @@ use App\Http\Resources\JobPostResource;
 use App\Http\Resources\JobApplicationResource;
 use App\Http\Requests\CreateJobRequest;
 use App\Http\Requests\UpdateJobRequest;
+use Illuminate\Contracts\Queue\Job;
 use Illuminate\Support\Facades\Log;
 
 
@@ -20,7 +21,7 @@ class JobPostController extends Controller
 
     public function student_index()
     {
-        $jobs = JobPost::where('status', 'active')->with('company')->get();
+        $jobs = JobPost::where('status', 'active')->with('company')->orderby('created_at', 'desc')->get();
         return JobPostResource::collection($jobs);
     }
 
