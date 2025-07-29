@@ -93,8 +93,22 @@ class StudentAuthController extends Controller
                 'token_type' => 'Bearer',
             ]);
         }
+        $admin = \App\Models\Admin::where('email', $request->email)->first();
 
-       return response()->json([
+        if ($admin && Hash::check($request->password, $admin->password)) {
+            $token = $admin->createToken('admin_token')->plainTextToken;
+            $user_type = 'admin';
+            return response()->json([
+                'name' => $admin->name,
+                'status' => true,
+                'message' => 'Login successful',
+                'user_type' => $user_type,
+                'token' => $token,
+                'token_type' => 'Bearer',
+            ]);
+        }
+
+        return response()->json([
             'status' => false,
             'message' => 'Invalid credentials'
         ], 401);
