@@ -21,14 +21,17 @@ class UniqueEmailAcrossTables implements Rule
     {
         $studentQuery = Student::where('email', $value);
         $companyQuery = Company::where('email', $value);
+        $adminQuery = \App\Models\Admin::where('email', $value);
 
         if ($this->type === 'student') {
             $studentQuery->where('id', '!=', $this->ignoreId);
         } elseif ($this->type === 'company') {
             $companyQuery->where('id', '!=', $this->ignoreId);
+        } elseif ($this->type === 'admin') {
+            $adminQuery->where('id', '!=', $this->ignoreId);
         }
 
-        return !$studentQuery->exists() && !$companyQuery->exists();
+        return !$studentQuery->exists() && !$companyQuery->exists() && !$adminQuery->exists();
     }
 
     public function message()

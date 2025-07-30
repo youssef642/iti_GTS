@@ -80,10 +80,11 @@ class JobPostController extends Controller
         return response()->json(['message' => 'Job not found'], 404);
     }
 
-    // تحقق إن الشركة المالكة هي اللي بتعدل
     if ($job->company_id !== Auth::id()) {
         return response()->json(['message' => 'Unauthorized'], 403);
     }
+    
+
 
     $job->fill($request->validated());
     $job->save();

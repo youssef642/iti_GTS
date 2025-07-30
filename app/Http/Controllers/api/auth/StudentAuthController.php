@@ -37,7 +37,8 @@ class StudentAuthController extends Controller
             'age',
             'phone',
             'address',
-            'track_name',
+            'track',
+            'duration_track',
             'interests'
         ]);
 
