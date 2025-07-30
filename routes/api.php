@@ -99,3 +99,7 @@ Route::get('/admins', [AdminController::class, 'index']);         // عرض كل
 Route::post('/admins', [AdminController::class, 'store']);        // إضافة أدمن
 Route::delete('/admins/{id}', [AdminController::class, 'destroy']); // حذف أدمن
 Route::get('/admins/jobs', [AdminController::class, 'getalljobs']); // عرض كل الوظائف
+Route::delete('/admins/students/{id}', [AdminController::class, 'deleteStudent']); // حذف طالب
+Route::delete('/admins/companies/{id}', [AdminController::class, 'deleteCompany']); // حذف شركة
+Route::delete('/admins/jobs/{id}',[AdminController::class, 'deleteJob']);
+Route::delete('admins/applications/{id}' , [AdminController::class, 'deleteApplication']);
