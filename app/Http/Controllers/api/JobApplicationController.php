@@ -198,7 +198,7 @@ public function cancelApplication($applicationId)
 
 public function getAllApplications()
 {
-    $applications = JobApplication::all()->load('student', 'jobPost');
+    $applications = JobApplication::orderBy('created_at', 'desc')->with('student', 'jobPost')->get();
     $count = $applications->count();
     return response()->json([
         'count' => $count,
