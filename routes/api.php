@@ -48,6 +48,7 @@ Route::prefix('company')->middleware('auth:sanctum')->group(function () {
     Route::post('/jobs', [JobPostController::class, 'storejob']);
     Route::delete('/jobs/{id}', [JobPostController::class, 'destroy']);
     Route::put('/job-applications/{id}/status', [JobApplicationController::class, 'updateStatus']);
+    Route::get('/jobs/applications/{id}', [JobApplicationController::class, 'getApplication']);
 
 
 });

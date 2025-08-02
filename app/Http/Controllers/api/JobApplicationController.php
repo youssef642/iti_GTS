@@ -189,7 +189,7 @@ public function cancelApplication($applicationId)
     return response()->json("Application cancelled successfully");
 }
   public function getApplication($applicationId){
-    $application = JobApplication::where('id', $applicationId)->first();
+    $application = JobApplication::where('id', $applicationId)->with('jobPost')->first();
     if (!$application) {
         return response()->json(['message' => 'Application not found'], 404);
     }

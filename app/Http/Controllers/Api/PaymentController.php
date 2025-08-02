@@ -7,6 +7,9 @@ use App\Models\JobApplication;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Mail;
+use App\Mail\PaymentMail;
+use Illuminate\Validation\ValidationException;
 use Stripe\Stripe;
 use Stripe\PaymentIntent;
 
@@ -68,6 +71,8 @@ class PaymentController extends Controller
             ]);
             $application->jobPost->status = 'paid';
             $application->jobPost->save();
+            Mail::to($application->student->email)->send(new PaymentMail($paymentIntent, $application));
+
 
             return response()->json(['message' => 'payment success']);
         } catch (\Exception $e) {
